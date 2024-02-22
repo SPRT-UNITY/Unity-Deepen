@@ -5,11 +5,14 @@ using UnityEngine.Assertions;
 
 public class Map : MonoBehaviour
 {
-    [SerializeField]
-    SpawnPoint spawnPoint;
+    [field: SerializeField]
+    public SpawnPoint spawnPoint { get; private set; }
+
     // Start is called before the first frame update
     void Start()
     {
+        if(spawnPoint == null)
+            spawnPoint = GetComponentInChildren<SpawnPoint>();
         Assert.IsNotNull(spawnPoint);
     }
 

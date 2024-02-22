@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField]
+    [field: SerializeField]
     public PlayerCharacterController possessedCharacterController { get; private set; }
     PlayerInput playerInput;
     Camera cam;
@@ -25,22 +25,27 @@ public class Player : MonoBehaviour
     {
         OnPossessed += Possess;
         OnUnPossessed += UnPossess;
-
-        if(possessedCharacterController == null) 
-        {
-            possessedCharacterController = FindObjectOfType<PlayerCharacterController>();
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        HandleInput();
+        if(possessedCharacterController != null)
+            HandleInput();
+    }
+
+    private void LateUpdate()
+    {
+        // for camera
+        SetCameraPosition();
     }
 
     public void HandleInput() 
     {
         Vector2 moveVector = playerInput.PlayerActions.Move.ReadValue<Vector2>();
+        if (moveVector.magnitude == 0) return;
+
+        Debug.Log("MOVE!");
         possessedCharacterController.control.Move(moveVector);
 
         //Vector3 lookPosition = new Vector3();
@@ -54,8 +59,6 @@ public class Player : MonoBehaviour
         //Vector3 lookVector = lookPosition - possessedCharacterController.gameObject.transform.position;
 
         //possessedCharacterController.movement.Rotate(lookVector);
-
-        Debug.Log(moveVector);
 
         possessedCharacterController.control.Look(new Vector3(moveVector.x, 0, moveVector.y));
     }
@@ -72,6 +75,13 @@ public class Player : MonoBehaviour
             OnUnPossessed.Invoke();
         }
         possessedCharacterController = characterController;
+
+        cam.transform.position = new Vector3(0, 2, -5) + possessedCharacterController.transform.position;
+    }
+
+    public void SetCameraPosition() 
+    {
+        cam.transform.position = new Vector3(0, 2, -5) + possessedCharacterController.transform.position;
     }
 
     public void UnPossess() 

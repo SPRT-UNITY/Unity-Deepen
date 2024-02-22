@@ -361,7 +361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274919b0a0767f94db1a658561706157, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPoint: {fileID: 8309816168409947802}
+  <spawnPoint>k__BackingField: {fileID: 8309816168409947802}
 --- !u!1 &2035267597427316058
 GameObject:
   m_ObjectHideFlags: 0
