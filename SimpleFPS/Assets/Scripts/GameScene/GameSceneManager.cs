@@ -31,6 +31,7 @@ public class GameSceneManager : MonoBehaviour
         CreateAndSpawnMap();
         CreateCharacter();
         SpawnCharacter();
+        Test();
     }
 
     void CreateAndSpawnMap() 
@@ -50,5 +51,10 @@ public class GameSceneManager : MonoBehaviour
     void SpawnCharacter() 
     {
         player.possessedCharacterController.transform.position = map.spawnPoint.transform.position;
+    }
+
+    void Test() 
+    {
+        player.possessedCharacterController.control.RotateBy(new Vector3(0, 1, 0));
     }
 }

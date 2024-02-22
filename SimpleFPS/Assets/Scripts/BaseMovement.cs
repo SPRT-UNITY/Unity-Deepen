@@ -22,10 +22,10 @@ public enum EControlType
 
 public static class MovementFactory 
 {
-    public static IControllable createMovement(EControlType controlType) 
+    public static Type createMovement<T>(EControlType controlType) where T : IControllable
     {
         if (controlType == EControlType.Grounded)
-            return new BaseMovement();
+            return typeof(BaseMovement);
         return null;
     }
 }
@@ -36,7 +36,7 @@ public class BaseMovement : MonoBehaviour, IControllable
     Rigidbody rigidBody;
 
     Vector2 moveVector;
-    Vector3 rotateVector;
+    Vector3 rotateToVector;
 
     private void Awake()
     {
@@ -56,18 +56,20 @@ public class BaseMovement : MonoBehaviour, IControllable
 
     public void Look(Vector3 lookVector) 
     {
-        gameObject.transform.forward = lookVector;
+        gameObject.transform.rotation = Quaternion.LookRotation(lookVector);
     }
 
 
     public void RotateBy(Vector3 rotateVector)
     {
-        rigidBody.MoveRotation(Quaternion.Euler(rotateVector));
+        Vector3 targetVector = transform.rotation.eulerAngles + Quaternion.LookRotation(rotateVector).eulerAngles;
+        RotateTo(targetVector);
     }
 
     public void RotateTo(Vector3 targetVector) 
     {
-
+        rotateToVector = targetVector.normalized;
+        gameObject.transform.rotation = Quaternion.LookRotation(Vector3.Lerp(gameObject.transform.forward, rotateToVector, Time.fixedDeltaTime * 1));
     }
 
     private void FixedUpdate()
@@ -76,9 +78,9 @@ public class BaseMovement : MonoBehaviour, IControllable
         {
             Move(moveVector);
         }
-        if(rotateVector != Vector3.zero)
+        if(rotateToVector != Vector3.zero)
         {
-            RotateTo(rotateVector);
+            RotateTo(rotateToVector);
         }
     }
 
